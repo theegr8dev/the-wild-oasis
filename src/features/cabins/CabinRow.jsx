@@ -1,7 +1,10 @@
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { formatCurrency } from '../../utils/helpers';
-import Button from '../../ui/Button';
+
+import CreateCabinForm from './CreateCabinForm';
+import { useState } from 'react';
+import { useDeleteCabin } from './useDeleteCabin';
 const TableRow = styled.div`
     display: grid;
     grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
@@ -41,16 +44,47 @@ const Discount = styled.div`
     color: var(--color-green-700);
 `;
 function CabinRow({ cabin }) {
-    const { name, maxCapcity, regularPrice, discount, image } = cabin;
+    const [showForm, setShowForm] = useState(false);
+    const { isDeleting, deleteCabin } = useDeleteCabin();
+    const {
+        id: cabinId,
+        name,
+        maxCapcity,
+        regularPrice,
+        discount,
+        image,
+    } = cabin;
     return (
-        <TableRow>
-            <Img src={image} />
-            <Cabin>{name}</Cabin>
-            <div>Fits up to {maxCapcity} guests</div>
-            <Price>{formatCurrency(regularPrice)}</Price>
-            <Discount>{formatCurrency(discount)}</Discount>
-            <button>delete</button>
-        </TableRow>
+        <>
+            <TableRow>
+                <Img src={image} />
+                <Cabin>{name}</Cabin>
+                <div>Fits up to {maxCapcity} guests</div>
+                <Price>{formatCurrency(regularPrice)}</Price>
+                {discount ? (
+                    <Discount>{formatCurrency(discount)}</Discount>
+                ) : (
+                    <span>&mdash;</span>
+                )}
+                <div>
+                    <button onClick={() => setShowForm(show => !show)}>
+                        Edit
+                    </button>
+                    <button
+                        onClick={() => deleteCabin(cabinId)}
+                        disabled={isDeleting}
+                    >
+                        delete
+                    </button>
+                </div>
+            </TableRow>
+            {showForm && (
+                <CreateCabinForm
+                    cabinToEdit={cabin}
+                    setShowForm={setShowForm}
+                />
+            )}
+        </>
     );
 }
 
