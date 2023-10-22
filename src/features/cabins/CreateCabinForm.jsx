@@ -9,7 +9,7 @@ import FormRow from '../../ui/FormRow';
 import { useCreateCabin } from './useCreateCabin';
 import { useEditCabin } from './useEditCabin';
 
-function CreateCabinForm({ cabinToEdit = {}, setShowForm }) {
+function CreateCabinForm({ cabinToEdit = {} }) {
     const { id: editId, ...editValues } = cabinToEdit;
     const { isCreating, createCabin } = useCreateCabin();
     const { isEditing, editCabin } = useEditCabin();
@@ -23,15 +23,14 @@ function CreateCabinForm({ cabinToEdit = {}, setShowForm }) {
     function onSubmit(data) {
         const image =
             typeof data.image === 'string' ? data.image : data.image[0];
-        if (isEditSession) {
+        if (isEditSession)
             editCabin(
                 { newCabinData: { ...data, image }, id: editId },
                 {
                     onSuccess: () => reset(),
                 }
             );
-            setShowForm(show => !show);
-        } else
+        else
             createCabin(
                 { ...data, image: image },
                 {
